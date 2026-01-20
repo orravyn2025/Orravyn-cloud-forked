@@ -883,27 +883,19 @@
             const betaNotice = document.getElementById("beta-notice");
 
             if (!sessionStorage.getItem("betaNoticeShown") && betaNotice) {
-                // Show the notice
                 betaNotice.style.display = "block";
 
-                // After 2.5 seconds, fade it out smoothly
                 setTimeout(() => {
-                    betaNotice.style.opacity = "0"; // start fade
-                    // After transition, remove from DOM
-                    setTimeout(() => betaNotice.remove(), 1000); // 1s matches CSS transition
-                }, 4000);
+                    betaNotice.style.opacity = "0";
+                    setTimeout(() => betaNotice.remove(), 1000);
+                }, 3600);
 
-                // Mark as shown for this session
                 sessionStorage.setItem("betaNoticeShown", "true");
             } else if (betaNotice) {
-                // Remove it immediately if already shown
                 betaNotice.remove();
             }
         });
     </script>
-
-
-
 
 
     {% block extra_js %}{% endblock %}
