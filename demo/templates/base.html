@@ -678,8 +678,7 @@
                                 <li><a class="dropdown-item" href="{% url 'groups:my_groups' %}">
                                         <i class="fas fa-user-friends"></i>My Groups
                                     </a></li>
-                                {% if user.user_type == 'publisher' or user.user_type == 'moderator' or user.user_type
-                                == 'admin' %}
+                                {% if user.user_type == 'publisher' or user.user_type == 'moderator' or user.user_type == 'admin' %}
                                 <li>
 
                                     <hr class="dropdown-divider">
