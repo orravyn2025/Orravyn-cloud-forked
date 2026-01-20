@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Search History - Research Platform{% endblock %}
+
+
+{% block content %}
+<style>
+.feature-btn {
+    background: var(--primary-gradient) !important;
+    border: none;
+    color: var(--text-primary) !important;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    font-weight: 500;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+    justify-content: center;
+}
+
+.feature-btn:hover {
+    transform: translateX(5px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    color: var(--text-primary) !important;
+}
+
+/* Override default Bootstrap pagination links with gradient style */
+.page-link {
+    background: var(--primary-gradient);
+    border: none;
+    color: var(--text-primary) !important;
+    border-radius: 50px;
+    padding: 0.5rem 0.75rem;
+    transition: var(--transition);
+    cursor: pointer;
+    user-select: none;
+}
+
+.page-link:hover, 
+.page-item.active .page-link {
+    background: var(--secondary-gradient);
+    color: var(--text-primary) !important;
+    box-shadow: 0 10px 25px rgba(245, 87, 108, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Pagination container spacing adjustment */
+.pagination {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Search History</h2>
+    <a href="{% url 'search:search' %}" class="feature-btn">New Search</a>
+</div>
+
+
+<div class="card">
+    <div class="card-body">
+        {% for search in searches %}
+            <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                <div>
+                    <a href="{% url 'search:search' %}?q={{ search.query }}" class="text-decoration-none">
+                        {{ search.query }}
+                    </a>
+                </div>
+                <small class="text-muted">{{ search.timestamp|date:"M d, Y H:i" }}</small>
+            </div>
+        {% empty %}
+            <p class="text-center">No search history yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% if is_paginated %}
+<nav aria-label="Search history pagination" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+        {% endif %}
+        
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

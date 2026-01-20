@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %}Papers - Research Platform{% endblock %}
+
+{% block content %}
+<style>
+    .feature-btn {
+        background: var(--primary-gradient) !important;
+        border: none;
+        color: var(--text-primary) !important;
+        padding: 0.675rem 1.75rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        user-select: none;
+        justify-content: center;
+        box-shadow: var(--shadow-glass);
+    }
+
+    .feature-btn:hover {
+        transform: translateX(6px);
+        box-shadow: 0 12px 28px rgba(102, 126, 234, 0.45);
+        color: var(--text-primary) !important;
+    }
+
+    .glossy-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-glass);
+        color: var(--text-primary);
+        height: 100%;
+        transition: var(--transition);
+        padding: 1.25rem 1.5rem;
+    }
+
+    h2, h5.card-title {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        user-select: none;
+    }
+
+    .card-title a {
+        color: var(--text-primary);
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .card-text {
+        color: var(--text-secondary);
+    }
+
+    .badge.bg-secondary {
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        color: var(--text-primary) !important;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        margin-right: 0.4rem;
+        user-select: none;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Research Papers</h2>
+    {% if user.is_authenticated and user.user_type != 'reader' %}
+        <a href="{% url 'papers:upload' %}" class="feature-btn">Upload Paper</a>
+    {% endif %}
+</div>
+
+<div class="card glossy-card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control"
+                       placeholder="Search papers..." value="{{ search_query }}">
+            </div>
+
+            <div class="col-md-3">
+                <select name="category" class="form-control">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}"
+                            {% if category.id|stringformat:"s" == selected_category %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <select name="sort" class="form-control">
+                    <option value="-created_at" {% if sort_by == '-created_at' %}selected{% endif %}>
+                        Newest First
+                    </option>
+                    <option value="created_at" {% if sort_by == 'created_at' %}selected{% endif %}>
+                        Oldest First
+                    </option>
+                    <option value="popular" {% if sort_by == 'popular' %}selected{% endif %}>
+                        Most Popular
+                    </option>
+                    <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>
+                        Highest Rated
+                    </option>
+                    <option value="citations" {% if sort_by == 'citations' %}selected{% endif %}>
+                        Most Cited
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    Filter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    {% for paper in papers %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card glossy-card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">
+                        <a href="{% url 'papers:detail' paper.pk %}">
+                            {{ paper.title|truncatechars:60 }}
+                        </a>
+                    </h5>
+
+                    <p class="card-text">
+                        {{ paper.abstract|truncatechars:120 }}
+                    </p>
+
+                    <p class="card-text">
+                        <small>By {{ paper.authors|truncatechars:50 }}</small>
+                    </p>
+
+                    <div class="mb-2">
+                        {% for category in paper.categories.all %}
+                            <span class="badge bg-secondary">{{ category.name }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <small class="text-secondary">
+                            {{ paper.publication_date|date:"Y" }} | Views: {{ paper.view_count }}
+                        </small>
+
+                        {% if user.is_authenticated %}
+                            <!-- 🔒 BOOKMARK ICON (VISIBLE BUT DISABLED) -->
+                            <button
+                                class="feature-btn btn-sm p-1"
+                                style="font-size:1rem;min-width:38px;justify-content:center;"
+                                disabled
+                                title="Bookmark coming soon">
+                                <i class="far fa-bookmark"></i>
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12 text-center text-secondary">
+            <p>No papers found matching your criteria.</p>
+            <a href="{% url 'papers:list' %}" class="feature-btn">View All Papers</a>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Advanced Search - Research Platform{% endblock %}
+
+
+{% block content %}
+<style>
+.feature-btn {
+    background: var(--primary-gradient) !important;
+    border: none;
+    color: var(--text-primary) !important;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 500;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+    justify-content: center;
+}
+.feature-btn:hover {
+    transform: translateX(5px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    color: var(--text-primary) !important;
+}
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Advanced Search</h3>
+            </div>
+            <div class="card-body">
+                <form method="get" action="{% url 'search:search' %}">
+                    <div class="mb-3">
+                        <label class="form-label">Keywords</label>
+                        <input type="text" name="q" class="form-control" placeholder="Enter search terms...">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Category</label>
+                                <select name="category" class="form-control">
+                                    <option value="">All Categories</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}">{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Author</label>
+                                <input type="text" name="author" class="form-control" placeholder="Author name...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Year From</label>
+                                <input type="number" name="year_from" class="form-control" min="1900" max="2030">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Year To</label>
+                                <input type="number" name="year_to" class="form-control" min="1900" max="2030">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="feature-btn">Search</button>
+                    <a href="{% url 'search:search' %}" class="feature-btn" style="margin-left: 0.5rem;">Simple Search</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

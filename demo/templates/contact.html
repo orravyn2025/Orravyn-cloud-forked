@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us | Research Platform{% endblock %}
+
+{% block content %}
+<style>
+    .contact-hero {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-glass);
+        position: relative;
+        overflow: hidden;
+        padding: 4rem 3rem;
+        text-align: center;
+        margin-top: 3rem;
+    }
+
+    .contact-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: var(--primary-gradient);
+        opacity: 0.1;
+        z-index: -1;
+    }
+
+    .contact-hero::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(102, 126, 234, 0.12) 0%, transparent 70%);
+        animation: heroGlow 8s ease-in-out infinite;
+        z-index: -1;
+    }
+
+    .contact-icon {
+        font-size: 5rem;
+        margin-bottom: 1rem;
+        animation: slideInUp 0.8s ease-out;
+    }
+
+    .contact-icon i {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .contact-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        animation: slideInUp 0.8s ease-out 0.1s both;
+    }
+
+    .contact-text {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        margin-bottom: 2.5rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        animation: slideInUp 0.8s ease-out 0.2s both;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        animation: slideInUp 0.8s ease-out 0.3s both;
+    }
+
+    .feature-btn {
+        background: var(--secondary-gradient) !important;
+        border: none;
+        color: var(--text-primary) !important;
+        padding: 0.9rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-btn.secondary {
+        background: var(--primary-gradient) !important;
+    }
+
+    .feature-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+        transition: var(--transition);
+    }
+
+    .feature-btn:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 20px 40px rgba(102, 126, 234, 0.45);
+    }
+
+    .feature-btn:hover::before {
+        left: 100%;
+    }
+
+    @keyframes heroGlow {
+
+        0%,
+        100% {
+            transform: rotate(0deg) scale(1);
+        }
+
+        50% {
+            transform: rotate(180deg) scale(1.1);
+        }
+    }
+
+    @keyframes slideInUp {
+        from {
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Ripple effect styles */
+    .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(0);
+        animation: ripple 0.6s linear;
+        pointer-events: none;
+    }
+
+    @keyframes ripple {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .contact-hero {
+            padding: 2.5rem 1.5rem;
+        }
+
+        .contact-title {
+            font-size: 2rem;
+        }
+
+        .contact-icon {
+            font-size: 4rem;
+        }
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="contact-hero">
+            <div class="contact-icon">
+                <i class="fas fa-envelope-open-text"></i>
+            </div>
+            <div class="contact-title">Contact Us</div>
+            <p class="contact-text">
+                This is a view-only demo version. Please contact us to access the full application.
+            </p>
+
+            <div class="action-buttons">
+                <a href="{% url 'home' %}" class="feature-btn">
+                    <i class="fas fa-home"></i>
+                    Go Home
+                </a>
+                <a href="{% url 'info' %}" class="feature-btn secondary">
+                    <i class="fas fa-info-circle"></i>
+                    Information
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.feature-btn').forEach(button => {
+        button.addEventListener('click', function (e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.classList.add('ripple');
+
+            this.appendChild(ripple);
+
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+</script>
+{% endblock %}

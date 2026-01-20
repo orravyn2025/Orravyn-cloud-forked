@@ -1,0 +1,20 @@
+# In Django shell (python manage.py shell)
+
+from apps.ml_engine.recommendation_engine import ImprovedRecommendationEngine
+from apps.accounts.models import User
+
+# Create engine instance
+engine = ImprovedRecommendationEngine()
+
+# Build embeddings ONCE for all papers
+print("Building embeddings for all papers...")
+engine.build_embeddings()
+print("Embeddings built!")
+
+# Generate recommendations for each user WITHOUT rebuilding embeddings
+print("Generating recommendations for users...")
+for user in User.objects.all():
+    engine.generate_for_user(user, rebuild_embeddings=False)
+    print(f"Generated recommendations for user: {user.username}")
+
+print("Done!")
